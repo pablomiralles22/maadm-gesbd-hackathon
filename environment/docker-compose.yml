@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:5.0
+    hostname: mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - "${MONGODB_PORT}:27017"
+    volumes:
+      - hackathon-mongo:/data/db
+
+  elasticsearch:
+    image: elasticsearch:8.7.0
+    ports:
+      - 9200:9200      
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+    volumes:
+      - hackathon-es:/usr/share/elasticsearch/data
+
+  gaphdb:
+    image: ontotext/graphdb:10.4.1
+    ports:
+      - 7200:7200
+    volumes:
+      - hackathon-graphdb:/opt/graphdb/home
+
+volumes:
+  hackathon-mongo:
+  hackathon-es:
+  hackathon-graphdb:

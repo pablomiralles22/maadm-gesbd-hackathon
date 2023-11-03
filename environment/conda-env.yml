@@ -1,0 +1,22 @@
+name: master-gesbd
+
+channels:
+  - defaults
+  - conda-forge
+
+dependencies:
+  - python==3.10
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - seaborn
+  - pymongo
+  - python-dotenv
+  - ipykernel
+  - transformers
+  - datasets
+  - pytorch
+  - graphdb-python
+  - elasticsearch
+  - sentencepiece
+  - pip==20.2
