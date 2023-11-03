@@ -19,4 +19,5 @@ dependencies:
   - graphdb-python
   - elasticsearch
   - sentencepiece
+  - httpx
   - pip==20.2
