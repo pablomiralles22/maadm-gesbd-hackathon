@@ -12,6 +12,7 @@ dependencies:
   - seaborn
   - pymongo
   - python-dotenv
+  - dotenv
   - ipykernel
   - transformers
   - datasets
