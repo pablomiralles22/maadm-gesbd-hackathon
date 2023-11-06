@@ -16,7 +16,6 @@ dependencies:
   - transformers
   - datasets
   - pytorch
-  - graphdb-python
   - elasticsearch
   - sentencepiece
   - httpx

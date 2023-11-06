@@ -15,7 +15,7 @@ start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
 end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
 
 # CONSTANTS
-MAX_CONCURRENT_REQUESTS = 100
+MAX_CONCURRENT_REQUESTS = 10
 BOE_URL = 'https://boe.es'
 BOE_API = f'{BOE_URL}/diario_boe/xml.php?id='
 
@@ -27,18 +27,20 @@ get_id_regex_for_year = lambda year: rf'BOE-[^sS]-{year}-\d+'
 async def parse_boe_for_id(boe_id, target_dir, async_client):
     print(f'Parsing BOE for id {boe_id}')
     filepath = os.path.join(target_dir, f'{boe_id}.xml')
-    if not os.path.exists(filepath):
-        try:
-            response = await async_client.get(get_api_url_for_id(boe_id))
-            assert response.status_code == 200
-            xml_content = response.text
-            xml = ElementTree(element_tree_from_string(xml_content))
-            assert xml.getroot().tag != 'error'
-        except Exception as e:
-            print(f'ERROR: Could not fetch the XML for id {boe_id}. Received error {e}.')
-            return
-        with open(filepath, 'w') as file:
-            file.write(xml_content)
+    if os.path.exists(filepath):
+        return
+
+    try:
+        response = await async_client.get(get_api_url_for_id(boe_id))
+        assert response.status_code == 200, f"ERROR: Could not fetch the XML for id {boe_id}. Received status code {response.status_code}"
+        xml_content = response.text
+        xml = ElementTree(element_tree_from_string(xml_content))
+        assert xml.getroot().tag != 'error', f'ERROR: Could not fetch the XML for id {boe_id}. Received error {xml_content}'
+    except Exception as e:
+        print(f'ERROR: Could not fetch the XML for id {boe_id}. Received error {e}.')
+        return
+    with open(filepath, 'w') as file:
+        file.write(xml_content)
 
 async def parse_boe_for_date(date, async_client):
     date_str = date.strftime('%Y-%m-%d')
@@ -55,18 +57,20 @@ async def parse_boe_for_date(date, async_client):
         with open(summary_xml_filename, 'r') as file:
             summary_xml_content = file.read()
     else: # Otherwise, fetch it
-        summary_xml_content = requests.get(get_summary_api_url_for_date(date)).text
+        try:
+            response = requests.get(get_summary_api_url_for_date(date))
+            assert response.status_code == 200, f"ERROR: Could not fetch the summary XML for date {date_str}. Received status code {response.status_code}."
+            summary_xml_content = response.text
+            summary_xml = ElementTree(element_tree_from_string(summary_xml_content))
+            assert summary_xml.getroot().tag != 'error', f'ERROR: Could not fetch the summary XML for date {date_str}. Received error {summary_xml_content}.'
+    
+        except Exception as e:
+            print(f'ERROR: Could not fetch the summary XML for date {date_str}. Got error {e}.')
+            os.rmdir(date_directory)
+            return
+
         with open(summary_xml_filename, 'w') as file:
             file.write(summary_xml_content)
-    
-    try:
-        summary_xml = ElementTree(element_tree_from_string(summary_xml_content))
-        assert summary_xml.getroot().tag != 'error'
-    except Exception as e:
-        print(f'ERROR: Could not fetch the summary XML for date {date_str}. Got error {e}.')
-        os.remove(summary_xml_filename)
-        os.rmdir(date_directory)
-        return
 
     boe_ids = set(re.findall(get_id_regex_for_year(date.year), summary_xml_content))
     tasks = []
