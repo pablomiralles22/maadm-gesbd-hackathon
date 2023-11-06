@@ -190,3 +190,4 @@ pyrightconfig.json
 *.html
 *.xml
 downloads
+notebooks/boe/*
