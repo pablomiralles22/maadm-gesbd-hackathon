@@ -45,6 +45,17 @@ mongo_collection = mongo_client["boe_db"]["boe"]
 model = SentenceTransformer(env_config["SENTENCE_TRANSFORMER_MODEL"])
 
 ###### Inserting into Elasticsearch ######
+def load_text(doc_id, text):
+    document = {
+        "doc_id": doc_id,
+        "embedding": model.encode(text),
+        "text": text,
+    }
+    try:
+        es_client.index(index="boe", document = document)
+    except Exception as e:
+        print(f"Error while processing {doc_id}, paragraph {text}. Got {e}.")
+
 def load(document):
     soup = BeautifulSoup(document['texto'], "html.parser")
     doc_id = document['identificador']
@@ -56,16 +67,11 @@ def load(document):
         text = par.get_text().strip()
         if len(text) < args.char_threshold: continue
 
-        document = {
-            "doc_id": doc_id,
-            "embedding": model.encode(text),
-            "text": text,
-        }
-
-        try:
-            es_client.index(index="boe", document = document)
-        except Exception as e:
-            print(f"Error while processing {doc_id}, paragraph {text}. Got {e}.")
+        load_text(doc_id, text)
+    
+    load_text(doc_id, document["titulo"])
+    if len(document["materias"]) > 0:
+        load_text(doc_id, "; ".join(document["materias"]))
 
 def main():
     query = {}
