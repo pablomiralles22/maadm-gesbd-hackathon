@@ -5,14 +5,24 @@ import datetime
 import asyncio
 import httpx
 import re
+import argparse
+
 from xml.etree.ElementTree import fromstring as element_tree_from_string, ElementTree
 
-# Usage: python3 scrape.py start_date end_date target_path
-assert len(sys.argv) >= 4, 'ERROR: You must specify at start date, end date and target path'
-start_date, end_date, target_path = sys.argv[1], sys.argv[2], sys.argv[3]
+parser = argparse.ArgumentParser(
+    prog='Scrape',
+    description=(
+        'Performs scraping of the BOE for the given dates.'
+    ),
+)
+parser.add_argument('--target-path', default="downloads")
+parser.add_argument('-s', '--start-date', default=datetime.datetime.today().strftime('%Y-%m-%d'))
+parser.add_argument('-e', '--end-date', default=datetime.datetime.today().strftime('%Y-%m-%d'))
+args = parser.parse_args()
 
-start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d')
-end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d')
+
+start_date = datetime.datetime.strptime(args.start_date, '%Y-%m-%d')
+end_date = datetime.datetime.strptime(args.end_date, '%Y-%m-%d')
 
 # CONSTANTS
 MAX_CONCURRENT_REQUESTS = 10
@@ -47,7 +57,7 @@ async def parse_boe_for_date(date, async_client):
     print(f'Parsing BOE for date {date_str}')
     
     # create directory
-    date_directory = os.path.join(target_path, date.strftime('%Y/%m/%d'))
+    date_directory = os.path.join(args.target_path, date.strftime('%Y/%m/%d'))
     os.makedirs(date_directory, exist_ok=True)
     
     # get and store xml summary file, linking to all entrances
