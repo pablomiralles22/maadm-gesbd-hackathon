@@ -73,7 +73,7 @@ def main():
         start_date = datetime.strptime(args.start_date, '%Y-%m-%d')
         end_date = datetime.strptime(args.end_date, '%Y-%m-%d')
         query = {
-            "date": {
+            "fecha_publicacion": {
                 "$gte": start_date,
                 "$lte": end_date,
             }
@@ -84,7 +84,6 @@ def main():
             load(document)
         except Exception as e:
             print(f"Error while processing {document['identificador']}. Got {e}.")
-        break
 
 
 if __name__ == "__main__":
