@@ -1,17 +1,38 @@
 import os
 import sys
+import re
 import pymongo
+import argparse
 
 from xml.etree import ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import dotenv_values
 
-# Usage: python3 setup_dbs.py env_path files_path
-assert len(sys.argv) == 3, 'ERROR: Please provide the path to the env file and the path to the XML files as the second argument'
-env_path = sys.argv[1]
-files_path = sys.argv[2]
+###### Parse arguments #######
+parser = argparse.ArgumentParser(
+    prog='MongoLoad',
+    description=(
+        'Performs an insertion of the selected XML entries of the BOE. '
+        'The file structure of the directory with the files should match ',
+        'the one given by the scraping script.'
+    ),
+)
 
-env_config = dotenv_values(env_path)
+parser.add_argument('--path', default="downloads")
+parser.add_argument('--env-file', default="./.env")
+
+subparsers = parser.add_subparsers(dest="command", help="Provide the start and end date to insert in MongoDB.")
+subparsers.required = True
+
+date_mode_parser = subparsers.add_parser("dates")
+date_mode_parser.add_argument('-s', '--start-date', default=datetime.today().strftime('%Y-%m-%d'))
+date_mode_parser.add_argument('-e', '--end-date', default=datetime.today().strftime('%Y-%m-%d'))
+
+full_mode_parser = subparsers.add_parser("full")
+
+args = parser.parse_args()
+path = args.path
+env_config = dotenv_values(args.env_file)
 
 ###### Parsing XML ######
 def read_xml_files(path):
@@ -64,7 +85,7 @@ def jsonify_boe_entry(xml):
     # get XML text
     xml_text = xml.find("texto")
     html_text = ET.tostring(xml_text, encoding='utf8', method="html").decode('utf8')
-    html_text = "\n".join(html_text.split("\n")[1:-1])
+    html_text = re.sub(r"</?texto>", "", html_text).strip()
     entry_json["texto"] = html_text
 
     return entry_json
@@ -81,8 +102,31 @@ collection = db["boe"]
 
 
 ###### Inserting into MongoDB ######
-for filepath in read_xml_files(files_path):
-    # read file
-    xml = ET.parse(filepath)
-    entry_json = jsonify_boe_entry(xml)
-    collection.insert_one(entry_json)
+def insert_for_path(path):
+    for filepath in read_xml_files(path):
+        # read file
+        xml = ET.parse(filepath)
+        entry_json = jsonify_boe_entry(xml)
+
+        try:
+            collection.insert_one(entry_json)
+        except pymongo.errors.DuplicateKeyError:
+            print(f"Skipping {entry_json['identificador']}, already inserted.")
+        except Exception as e:
+            print(f"Unexpected error {e}.")
+
+def main():
+    if args.command == "dates":
+        start_date = datetime.strptime(args.start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(args.end_date, '%Y-%m-%d')
+
+        date = start_date
+        while date <= end_date:
+            path = os.path.join(args.path, date.strftime('%Y/%m/%d'))
+            insert_for_path(path)
+            date += timedelta(days=1)
+    else:
+        insert_for_path(args.path)
+
+if __name__ == "__main__":
+    main()

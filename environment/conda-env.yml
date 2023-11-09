@@ -6,18 +6,15 @@ channels:
 
 dependencies:
   - python==3.10
-  - pandas
-  - scikit-learn
-  - matplotlib
-  - seaborn
   - pymongo
   - python-dotenv
   - dotenv
   - ipykernel
   - transformers
-  - datasets
+  - sentence-transformers
   - pytorch
   - elasticsearch
   - sentencepiece
   - httpx
+  - sparqlwrapper
   - pip==20.2
