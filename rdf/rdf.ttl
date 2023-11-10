@@ -1,0 +1,200 @@
+@prefix : <http://www.semanticweb.org/hackathon/ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dbpedia: <http://dbpedia.org/ontology/> .
+@base <http://www.semanticweb.org/hackathon/ontology/> .
+
+<http://www.semanticweb.org/hackathon/ontology> rdf:type owl:Ontology ;
+                                                 owl:imports dbpedia: ,
+                                                             <http://www.w3.org/2002/07/owl> .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://www.semanticweb.org/hackathon/ontology/corrigeErrores
+:corrigeErrores rdf:type owl:ObjectProperty ;
+                rdfs:domain :EntradaBOE ;
+                rdfs:range :EntradaBOE .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/departamento
+:departamento rdf:type owl:ObjectProperty ;
+              rdfs:domain :EntradaBOE ;
+              rdfs:range :Departamento .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/origenLegislativo
+:origenLegislativo rdf:type owl:ObjectProperty ;
+                   rdfs:domain :EntradaBOE ;
+                   rdfs:range <http://es.dbpedia.org/resource/Comunidad_autónoma> ,
+                              <http://es.dbpedia.org/resource/Estado> ,
+                              <http://es.dbpedia.org/resource/Localidad> ,
+                              <http://es.dbpedia.org/resource/Provincia_(España)> .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/rangoLegislativo
+:rangoLegislativo rdf:type owl:ObjectProperty ;
+                  rdfs:domain :EntradaBOE ;
+                  rdfs:range :RangoLegislativo .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/sobreMateria
+:sobreMateria rdf:type owl:ObjectProperty ;
+              rdfs:domain :EntradaBOE ;
+              rdfs:range :Materia .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://www.semanticweb.org/hackathon/ontology/codigo
+:codigo rdf:type owl:DatatypeProperty ;
+        rdfs:domain :Departamento ,
+                    :Ley ,
+                    :Materia ,
+                    :RangoLegislativo ,
+                    :RelacionAnterior ,
+                    :RelacionPosterior ;
+        rdfs:range xsd:int .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/descripcion
+:descripcion rdf:type owl:DatatypeProperty ;
+             rdfs:domain :RangoLegislativo ,
+                         :RelacionAnterior ,
+                         :RelacionPosterior ;
+             rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/fecha_publicacion
+:fecha_publicacion rdf:type owl:DatatypeProperty ;
+                   rdfs:domain :EntradaBOE ;
+                   rdfs:range xsd:dateTime .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/identificador
+:identificador rdf:type owl:DatatypeProperty ;
+               rdfs:domain :EntradaBOE ;
+               rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/nombre
+:nombre rdf:type owl:DatatypeProperty ;
+        rdfs:domain :Departamento ,
+                    :Ley ,
+                    :Materia ;
+        rdfs:range xsd:string .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/titulo
+:titulo rdf:type owl:DatatypeProperty ;
+        rdfs:domain :EntradaBOE ;
+        rdfs:range xsd:string .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://es.dbpedia.org/resource/Comunidad_autónoma
+<http://es.dbpedia.org/resource/Comunidad_autónoma> rdf:type owl:Class .
+
+
+###  http://es.dbpedia.org/resource/Estado
+<http://es.dbpedia.org/resource/Estado> rdf:type owl:Class .
+
+
+###  http://es.dbpedia.org/resource/Localidad
+<http://es.dbpedia.org/resource/Localidad> rdf:type owl:Class .
+
+
+###  http://es.dbpedia.org/resource/Provincia_(España)
+<http://es.dbpedia.org/resource/Provincia_(España)> rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/Departamento
+:Departamento rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/EntradaBOE
+:EntradaBOE rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/Ley
+:Ley rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/Materia
+:Materia rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/RangoLegislativo
+:RangoLegislativo rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/RelacionAnterior
+:RelacionAnterior rdf:type owl:Class .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/RelacionPosterior
+:RelacionPosterior rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://dbpedia.org/resource/España
+<http://dbpedia.org/resource/España> rdf:type owl:NamedIndividual ,
+                                              <http://es.dbpedia.org/resource/Estado> .
+
+
+###  http://www.semanticweb.org/hackathon/ontology#Organización_de_las_Comunidades_Autónomas
+:Organización_de_las_Comunidades_Autónomas rdf:type owl:NamedIndividual ;
+                                           :codigo 5281 ;
+                                           :nombre "Organización de las Comunidades Autónomas" .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/BOE-A-2022-22147
+:BOE-A-2022-22147 rdf:type owl:NamedIndividual .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/BOE-A-2023-17679
+:BOE-A-2023-17679 rdf:type owl:NamedIndividual ,
+                           :EntradaBOE ;
+                  :corrigeErrores :BOE-A-2022-22147 ;
+                  :departamento :Ministerio_de_Defensa ;
+                  :origenLegislativo <http://dbpedia.org/resource/España> ;
+                  :rangoLegislativo :Resolución ;
+                  :fecha_publicacion "2023-08-01T00:00:00.000Z"^^xsd:dateTime ;
+                  :identificador "BOE-A-2023-17679" ;
+                  :titulo "Resolución 400/38323/2023, de 21 de julio, de la Subsecretaría, por la que se corrigen errores y se modifica la Resolución 400/38495/2022, de 21 de diciembre, por la que se convoca proceso selectivo para la estabilización de empleo temporal, para el acceso a la condición de personal estatutario fijo en plazas de la categoría de Enfermero/a, Fisioterapeuta y Matrona en la Red Hospitalaria de la Defensa." .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/Ministerio_de_Defensa
+:Ministerio_de_Defensa rdf:type owl:NamedIndividual ,
+                                :Departamento ;
+                       :codigo 6110 ;
+                       :nombre "Ministerio de Defensa" .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/Resolución
+:Resolución rdf:type owl:NamedIndividual ,
+                     :RangoLegislativo ;
+            :codigo 1370 ;
+            :nombre "Resolución" .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/corrigeErrores
+:corrigeErrores rdf:type owl:NamedIndividual ,
+                         :RelacionAnterior ;
+                :codigo 203 ;
+                :nombre "CORRIGE errores" .
+
+
+###  Generated by the OWL API (version 4.5.26.2023-07-17T20:34:13Z) https://github.com/owlcs/owlapi

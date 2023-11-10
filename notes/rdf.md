@@ -21,11 +21,6 @@
     - codigo
     - descripcion
 
-- Ley
-    - codigo: str
-    - nombre: str
-    - definida_en: EntradaBOE
-
 - RelacionPosterior
     - codigo
     - descripcion
@@ -35,12 +30,17 @@
     - descripcion
 
 
-Otras tuplas:
+**Otras tuplas**
 * EntradaBOE - RelacionPosterior concreta - EntradaBOE
 * EntradaBOE - RelacionAnterior concreta - EntradaBOE
 
+**Entidades externas**
+ComunidadAutonoma: http://es.dbpedia.org/resource/Comunidad_autónoma
+Provincia: http://es.dbpedia.org/resource/Provincia_(España)
+Localidad: http://es.dbpedia.org/resource/Localidad
+Estado: http://es.dbpedia.org/resource/Estado
+
 
 ## Notas de implementaciñon
-- Estado, ComunidadAutonoma, Localidad espero poder encontrarlos en otras bases de datos
-- Además, creo que se le puede poner cardinalidad
+- Además, creo que se le puede poner cardinalidad a los atributos
 - Las referencias (anterior y posterior) pueden apuntar a entradas "DOUE", que no sé lo que son, pero hay que filtrarlas.
