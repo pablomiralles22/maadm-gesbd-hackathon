@@ -71,8 +71,8 @@
              rdfs:range xsd:string .
 
 
-###  http://www.semanticweb.org/hackathon/ontology/fecha_publicacion
-:fecha_publicacion rdf:type owl:DatatypeProperty ;
+###  http://www.semanticweb.org/hackathon/ontology/fechaPublicacion
+:fechaPublicacion rdf:type owl:DatatypeProperty ;
                    rdfs:domain :EntradaBOE ;
                    rdfs:range xsd:dateTime .
 
@@ -171,7 +171,7 @@
                   :departamento :Ministerio_de_Defensa ;
                   :origenLegislativo <http://dbpedia.org/resource/España> ;
                   :rangoLegislativo :Resolución ;
-                  :fecha_publicacion "2023-08-01T00:00:00.000Z"^^xsd:dateTime ;
+                  :fechaPublicacion "2023-08-01T00:00:00.000Z"^^xsd:dateTime ;
                   :identificador "BOE-A-2023-17679" ;
                   :titulo "Resolución 400/38323/2023, de 21 de julio, de la Subsecretaría, por la que se corrigen errores y se modifica la Resolución 400/38495/2022, de 21 de diciembre, por la que se convoca proceso selectivo para la estabilización de empleo temporal, para el acceso a la condición de personal estatutario fijo en plazas de la categoría de Enfermero/a, Fisioterapeuta y Matrona en la Red Hospitalaria de la Defensa." .
 
