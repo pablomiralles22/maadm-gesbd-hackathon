@@ -9,20 +9,67 @@
  ] .
 
 #################################################################
+#    Datatypes
+#################################################################
+
+###  http://www.example.org/vocab#Departamento
+<http://www.example.org/vocab#Departamento> rdf:type rdfs:Datatype .
+
+
+###  http://www.example.org/vocab#EntradaBOE
+<http://www.example.org/vocab#EntradaBOE> rdf:type rdfs:Datatype .
+
+
+###  http://www.example.org/vocab#Materia
+<http://www.example.org/vocab#Materia> rdf:type rdfs:Datatype .
+
+
+###  http://www.example.org/vocab#RangoLegislativo
+<http://www.example.org/vocab#RangoLegislativo> rdf:type rdfs:Datatype .
+
+
+###  http://www.example.org/vocab#id
+<http://www.example.org/vocab#id> rdf:type rdfs:Datatype .
+
+
+#################################################################
 #    Object Properties
 #################################################################
 
 ###  http://www.example.org/vocab#afecta
 <http://www.example.org/vocab#afecta> rdf:type owl:ObjectProperty ;
-                                      rdfs:domain <http://www.example.org/vocab#Entrada_Boe> ;
+                                      rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
                                       rdfs:range <http://www.example.org/vocab#Localidad> ,
                                                  <http://www.example.org/vocab#Provincia> .
 
 
 ###  http://www.example.org/vocab#altera
 <http://www.example.org/vocab#altera> rdf:type owl:ObjectProperty ;
-                                      rdfs:domain <http://www.example.org/vocab#Entrada_Boe> ;
+                                      rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
                                       rdfs:range <http://www.example.org/vocab#Ley> .
+
+
+###  http://www.example.org/vocab#departamento
+<http://www.example.org/vocab#departamento> rdf:type owl:ObjectProperty ;
+                                            rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
+                                            rdfs:range <http://www.example.org/vocab#Departamento> .
+
+
+###  http://www.example.org/vocab#fechaPublicacion
+<http://www.example.org/vocab#fechaPublicacion> rdf:type owl:ObjectProperty ;
+                                                rdfs:domain <http://www.example.org/vocab#EntradaBOE> .
+
+
+###  http://www.example.org/vocab#materia
+<http://www.example.org/vocab#materia> rdf:type owl:ObjectProperty ;
+                                       rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
+                                       rdfs:range <http://www.example.org/vocab#Materia> .
+
+
+###  http://www.example.org/vocab#origenLegislativo
+<http://www.example.org/vocab#origenLegislativo> rdf:type owl:ObjectProperty ;
+                                                 rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
+                                                 rdfs:range <http://www.example.org/vocab#Provincia> .
 
 
 ###  http://www.example.org/vocab#pertenece
@@ -31,9 +78,15 @@
                                          rdfs:range <http://www.example.org/vocab#Provincia> .
 
 
+###  http://www.example.org/vocab#rango
+<http://www.example.org/vocab#rango> rdf:type owl:ObjectProperty ;
+                                     rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
+                                     rdfs:range <http://www.example.org/vocab#RangoLegislativo> .
+
+
 ###  http://www.example.org/vocab#referencia
 <http://www.example.org/vocab#referencia> rdf:type owl:ObjectProperty ;
-                                          rdfs:domain <http://www.example.org/vocab#Entrada_Boe> ;
+                                          rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
                                           rdfs:range <http://www.example.org/vocab#Materia> .
 
 
@@ -41,23 +94,83 @@
 #    Data properties
 #################################################################
 
+###  http://www.co-ode.org/ontologies/ont.owl#codigo
+<http://www.co-ode.org/ontologies/ont.owl#codigo> rdf:type owl:DatatypeProperty ;
+                                                  rdfs:domain <http://www.example.org/vocab#Departamento> ,
+                                                              <http://www.example.org/vocab#Ley> ,
+                                                              <http://www.example.org/vocab#Materia> ,
+                                                              <http://www.example.org/vocab#RangoLegislativo> ,
+                                                              <http://www.example.org/vocab#RelacionAnterior> ,
+                                                              <http://www.example.org/vocab#RelacionPosterior> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#definida_en
+<http://www.co-ode.org/ontologies/ont.owl#definida_en> rdf:type owl:DatatypeProperty ;
+                                                       rdfs:domain <http://www.example.org/vocab#Ley> ;
+                                                       rdfs:range <http://www.example.org/vocab#EntradaBOE> .
+
+
+###  http://www.co-ode.org/ontologies/ont.owl#id_boe
+<http://www.co-ode.org/ontologies/ont.owl#id_boe> rdf:type owl:DatatypeProperty ;
+                                                  rdfs:domain <http://www.example.org/vocab#RelacionAnterior> ,
+                                                              <http://www.example.org/vocab#RelacionPosterior> ;
+                                                  rdfs:range <http://www.example.org/vocab#id> .
+
+
+###  http://www.example.org/vocab#departamento
+<http://www.example.org/vocab#departamento> rdf:type owl:DatatypeProperty ;
+                                            rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
+                                            rdfs:range <http://www.example.org/vocab#Departamento> .
+
+
 ###  http://www.example.org/vocab#descripcion
 <http://www.example.org/vocab#descripcion> rdf:type owl:DatatypeProperty ;
-                                           rdfs:domain <http://www.example.org/vocab#Materia> ;
-                                           rdfs:range xsd:integer .
+                                           rdfs:domain <http://www.example.org/vocab#RangoLegislativo> ,
+                                                       <http://www.example.org/vocab#RelacionAnterior> ,
+                                                       <http://www.example.org/vocab#RelacionPosterior> ;
+                                           rdfs:range xsd:string .
+
+
+###  http://www.example.org/vocab#fechaPublicacion
+<http://www.example.org/vocab#fechaPublicacion> rdf:type owl:DatatypeProperty ;
+                                                rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
+                                                rdfs:range xsd:dateTime .
 
 
 ###  http://www.example.org/vocab#id
 <http://www.example.org/vocab#id> rdf:type owl:DatatypeProperty ;
-                                  rdfs:domain <http://www.example.org/vocab#Entrada_Boe> ;
+                                  rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
                                   rdfs:range xsd:string .
+
+
+###  http://www.example.org/vocab#materia
+<http://www.example.org/vocab#materia> rdf:type owl:DatatypeProperty ;
+                                       rdfs:domain <http://www.example.org/vocab#Departamento> ;
+                                       rdfs:range <http://www.example.org/vocab#Materia> .
 
 
 ###  http://www.example.org/vocab#nombre
 <http://www.example.org/vocab#nombre> rdf:type owl:DatatypeProperty ;
-                                      rdfs:domain <http://www.example.org/vocab#Ley> ,
-                                                  <http://www.example.org/vocab#Localidad> ,
-                                                  <http://www.example.org/vocab#Provincia> ;
+                                      rdfs:domain <http://www.example.org/vocab#Departamento> ,
+                                                  <http://www.example.org/vocab#Ley> ,
+                                                  <http://www.example.org/vocab#Materia> ;
+                                      rdfs:range xsd:string .
+
+
+###  http://www.example.org/vocab#origenLegislativo
+<http://www.example.org/vocab#origenLegislativo> rdf:type owl:DatatypeProperty ;
+                                                 rdfs:domain <http://www.example.org/vocab#EntradaBOE> .
+
+
+###  http://www.example.org/vocab#rango
+<http://www.example.org/vocab#rango> rdf:type owl:DatatypeProperty ;
+                                     rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
+                                     rdfs:range <http://www.example.org/vocab#RangoLegislativo> .
+
+
+###  http://www.example.org/vocab#titulo
+<http://www.example.org/vocab#titulo> rdf:type owl:DatatypeProperty ;
+                                      rdfs:domain <http://www.example.org/vocab#EntradaBOE> ;
                                       rdfs:range xsd:string .
 
 
@@ -65,8 +178,12 @@
 #    Classes
 #################################################################
 
-###  http://www.example.org/vocab#Entrada_Boe
-<http://www.example.org/vocab#Entrada_Boe> rdf:type owl:Class .
+###  http://www.example.org/vocab#Departamento
+<http://www.example.org/vocab#Departamento> rdf:type owl:Class .
+
+
+###  http://www.example.org/vocab#EntradaBOE
+<http://www.example.org/vocab#EntradaBOE> rdf:type owl:Class .
 
 
 ###  http://www.example.org/vocab#Ley
@@ -83,6 +200,18 @@
 
 ###  http://www.example.org/vocab#Provincia
 <http://www.example.org/vocab#Provincia> rdf:type owl:Class .
+
+
+###  http://www.example.org/vocab#RangoLegislativo
+<http://www.example.org/vocab#RangoLegislativo> rdf:type owl:Class .
+
+
+###  http://www.example.org/vocab#RelacionAnterior
+<http://www.example.org/vocab#RelacionAnterior> rdf:type owl:Class .
+
+
+###  http://www.example.org/vocab#RelacionPosterior
+<http://www.example.org/vocab#RelacionPosterior> rdf:type owl:Class .
 
 
 ###  Generated by the OWL API (version 4.5.26.2023-07-17T20:34:13Z) https://github.com/owlcs/owlapi
