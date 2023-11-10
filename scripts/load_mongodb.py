@@ -46,7 +46,7 @@ METADATA_FIELDS = [
     ("identificador", None),
     ("titulo", None),
     ("departamento", None),
-    ("fecha_publicacion", lambda x: datetime.strptime(x, "%Y%m%d")),
+    ("fecha_publicacion", lambda elem: datetime.strptime(elem, "%Y%m%d")),
     ("origen_legislativo", None),
     ("rango", None),
 ]
@@ -59,11 +59,18 @@ def jsonify_boe_entry(xml):
     for tag, parser in METADATA_FIELDS:
         element = metadata.find(tag)
         if element is None: continue
-        text = element.text
-        entry_json[tag] = parser(text) if parser is not None else text
+        text = parser(element.text) if parser is not None else element.text
+        code = element.get("codigo")
+        entry_json[tag] = text if code is None else {"codigo": code, "texto": text}
     
     # get topics
-    entry_json["materias"] = [topic.text for topic in xml.findall(".//materia")]
+    entry_json["materias"] = [
+        {
+            "codigo": topic.get("codigo"),
+            "texto": topic.text,
+        }
+        for topic in xml.findall(".//materia")
+    ]
 
     # get references
     past_refs = []
@@ -71,6 +78,10 @@ def jsonify_boe_entry(xml):
         past_refs.append({
             "identificador": ref.get("referencia"),
             "texto": ref.find("texto").text,
+            "relacion": {
+                "codigo": ref.find("palabra").get("codigo"),
+                "texto": ref.find("palabra").text,
+            }
         })
     entry_json["anteriores"] = past_refs
 
@@ -79,6 +90,10 @@ def jsonify_boe_entry(xml):
         future_refs.append({
             "identificador": ref.get("referencia"),
             "texto": ref.find("texto").text,
+            "relacion": {
+                "codigo": ref.find("palabra").get("codigo"),
+                "texto": ref.find("palabra").text,
+            }
         })
     entry_json["posteriores"] = future_refs
 
