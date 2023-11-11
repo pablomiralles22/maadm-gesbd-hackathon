@@ -49,7 +49,7 @@ async def parse_boe_for_id(boe_id, target_dir, async_client):
     except Exception as e:
         print(f'ERROR: Could not fetch the XML for id {boe_id}. Received error {e}.')
         return
-    with open(filepath, 'w') as file:
+    with open(filepath, 'w', encoding='utf-8') as file:
         file.write(xml_content)
 
 async def parse_boe_for_date(date, async_client):
@@ -79,7 +79,7 @@ async def parse_boe_for_date(date, async_client):
             os.rmdir(date_directory)
             return
 
-        with open(summary_xml_filename, 'w') as file:
+        with open(summary_xml_filename, 'w', encoding='utf-8') as file:
             file.write(summary_xml_content)
 
     boe_ids = set(re.findall(get_id_regex_for_year(date.year), summary_xml_content))
