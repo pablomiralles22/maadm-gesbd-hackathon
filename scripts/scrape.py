@@ -29,19 +29,30 @@ MAX_CONCURRENT_REQUESTS = 10
 BOE_URL = 'https://boe.es'
 BOE_API = f'{BOE_URL}/diario_boe/xml.php?id='
 
+
+class AsyncClientWithLimit:
+    def __init__(self, limit):
+        self.client = httpx.AsyncClient()
+        self.limit = limit
+        self.semaphore = asyncio.Semaphore(limit)
+
+    async def get(self, *args, **kwargs):
+        async with self.semaphore:
+            return await self.client.get(*args, **kwargs)
+
 get_api_url_for_id = lambda id: f'{BOE_API}{id}'
 get_summary_api_url_for_date = lambda date: f'{BOE_API}BOE-S-{date.strftime("%Y%m%d")}'
 
 get_id_regex_for_year = lambda year: rf'BOE-[^sS]-{year}-\d+'
 
 async def parse_boe_for_id(boe_id, target_dir, async_client):
-    print(f'Parsing BOE for id {boe_id}')
     filepath = os.path.join(target_dir, f'{boe_id}.xml')
     if os.path.exists(filepath):
         return
 
     try:
         response = await async_client.get(get_api_url_for_id(boe_id))
+        print(f'Parsing BOE for id {boe_id}')
         assert response.status_code == 200, f"ERROR: Could not fetch the XML for id {boe_id}. Received status code {response.status_code}"
         xml_content = response.text
         xml = ElementTree(element_tree_from_string(xml_content))
@@ -85,21 +96,18 @@ async def parse_boe_for_date(date, async_client):
     boe_ids = set(re.findall(get_id_regex_for_year(date.year), summary_xml_content))
     tasks = []
     for boe_id in boe_ids:
-        tasks.append(
-            asyncio.create_task(parse_boe_for_id(boe_id, date_directory, async_client))
-        )
+        tasks.append(asyncio.create_task(parse_boe_for_id(boe_id, date_directory, async_client)))
     await asyncio.gather(*tasks)
-
 
 async def main():
     tasks = []
-    limits = httpx.Limits(max_connections=MAX_CONCURRENT_REQUESTS)
-    async with httpx.AsyncClient(limits=limits) as async_client:
-        date = start_date
-        while date <= end_date:
-            tasks.append(asyncio.create_task(parse_boe_for_date(date, async_client)))
-            date += datetime.timedelta(days=1)
-        await asyncio.gather(*tasks)
+    async_client = AsyncClientWithLimit(MAX_CONCURRENT_REQUESTS)
+    # async with httpx.AsyncClient() as async_client:
+    date = start_date
+    while date <= end_date:
+        tasks.append(asyncio.create_task(parse_boe_for_date(date, async_client)))
+        date += datetime.timedelta(days=1)
+    await asyncio.gather(*tasks)
 
 if __name__ == '__main__':
     asyncio.run(main())
