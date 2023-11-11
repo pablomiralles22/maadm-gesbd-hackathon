@@ -1,9 +1,10 @@
 import pymongo
-import sys
 import argparse
+import requests
 
 from dotenv import dotenv_values
 from elasticsearch import Elasticsearch
+from SPARQLWrapper import SPARQLWrapper, POST
 
 parser = argparse.ArgumentParser(
     prog='DB Setup',
@@ -12,6 +13,8 @@ parser = argparse.ArgumentParser(
     ),
 )
 parser.add_argument('--env-file', default="./.env")
+parser.add_argument('--graphdb-repo-init-file', default="rdf/graphdb_init.ttl")
+parser.add_argument('--graphdb-init-query', default="rdf/graphdb_init_query.txt")
 args = parser.parse_args()
 
 env_config = dotenv_values(args.env_file)
@@ -102,3 +105,29 @@ except Exception as error:
     print("Error:", error)
     
 ##### GRAPHDB #####
+print('Setting up GraphDB...')
+
+url = (
+    f"http://{env_config['GRAPHDB_HOST']}:{env_config['GRAPHDB_PORT']}"
+    f"/rest/repositories"
+)
+
+with open(args.graphdb_repo_init_file, 'r') as f:
+    files=[ ('config', ('file', f, 'application/octet-stream') ) ]
+    response = requests.request("POST", url, headers={}, data={}, files=files)
+
+print(response.text)
+
+##############
+
+sparql = SPARQLWrapper(
+    f"http://{env_config['GRAPHDB_HOST']}:{env_config['GRAPHDB_PORT']}"
+    f"/repositories/{env_config['GRAPHDB_REPOSITORY']}/statements"
+)
+sparql.setMethod(POST)
+
+with open(args.graphdb_init_query, 'r') as f:
+    rdf_init = f.read()
+
+sparql.setQuery(rdf_init)
+print(sparql.query().info())
