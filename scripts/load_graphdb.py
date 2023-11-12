@@ -126,7 +126,7 @@ def create_named_individual(name):
     ]
     return name, tuples
 
-def create_boe_entry(title, code, date, department, topics, previous, posteriors):
+def create_boe_entry(title, code, date, department, topics, previous, posteriors, origen_legislativo):
     entity_name = code
     tuples = [
         semantic_tuple(f":{entity_name}", "rdf:type", "owl:NamedIndividual"),
@@ -142,6 +142,14 @@ def create_boe_entry(title, code, date, department, topics, previous, posteriors
         tuples.append(semantic_tuple(f":{entity_name}", ":departamento", f":{department_entity_name}"))
     
     # TODO: origen legislativo, debemos buscarlo en otra DB
+    #referencias a wikidata/DBpedia?
+    if origen_legislativo is None: pass 
+    elif origen_legislativo == "Estatal": 
+        tuples.append(semantic_tuple(f":{entity_name}", ":origenLegislativo", f"{encode_string('España')}"))
+    elif origen_legislativo == "Autonómico":
+        tuples.append(semantic_tuple(f":{entity_name}", ":origenLegislativo", f"{encode_string(department['texto'])}")) #Comunidad Autónoma
+    else: 
+        tuples.append(semantic_tuple(f":{entity_name}", ":origenLegislativo", f"{encode_string('Local')}"))
     
     for topic in topics:
         topic_entity_name, topic_tuples = create_topic(topic["texto"], topic["codigo"])
@@ -172,7 +180,11 @@ def load(document):
     topics = document.get("materias")
     previous = document.get("anteriores")
     posteriors = document.get("posteriores")
-    entity_name, tuples = create_boe_entry(title, code, date, department, topics, previous, posteriors)
+    try:
+        origen_legislativo = document.get("origen_legislativo")['texto']
+    except Exception as e:
+        origen_legislativo = ""
+    entity_name, tuples = create_boe_entry(title, code, date, department, topics, previous, posteriors, origen_legislativo)
     try:
         insert_tuples(tuples)
     except Exception as e:
