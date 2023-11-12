@@ -44,7 +44,7 @@ mongo_collection = mongo_client["boe_db"]["boe"]
 
 ###### Auxiliar functions ######
 def to_title_case(s):
-    return re.sub(r"(\s+|[;,.])", "", s.title())
+    return re.sub(r"(\s+|[;,.'])", "", s.title())
 
 def to_camel_case(s):
     title_case = to_title_case(s)
@@ -77,10 +77,19 @@ def insert_tuples(tuples):
     sparql.setQuery(query=query)
     return sparql.query()
 
+def create_legislative_source(type, name):
+    entity_name = to_title_case(name)
+    tuples = [
+        semantic_tuple(f":{entity_name}", "rdf:type", "owl:NamedIndividual"),
+        semantic_tuple(f":{entity_name}", "rdf:type", f":{type}"),
+        semantic_tuple(f":{entity_name}", ":nombre", encode_string(name)),
+    ]
+    return entity_name, tuples
+
 def create_range(name, code):
     entity_name = to_title_case(name)
     tuples = [
-        semantic_tuple(f":{entity_name}", "rdf:type", ":owl:NamedIndividual"),
+        semantic_tuple(f":{entity_name}", "rdf:type", "owl:NamedIndividual"),
         semantic_tuple(f":{entity_name}", "rdf:type", ":RangoLegislativo"),
         semantic_tuple(f":{entity_name}", ":nombre", encode_string(name)),
         semantic_tuple(f":{entity_name}", ":codigo", encode_integer(code)),
@@ -103,7 +112,7 @@ def create_relationship_type(name, code, is_previous):
 def create_topic(name, code):
     entity_name = to_title_case(name)
     tuples = [
-        semantic_tuple(f":{entity_name}", "rdf:type", ":owl:NamedIndividual"),
+        semantic_tuple(f":{entity_name}", "rdf:type", "owl:NamedIndividual"),
         semantic_tuple(f":{entity_name}", "rdf:type", ":Materia"),
         semantic_tuple(f":{entity_name}", ":nombre", encode_string(name)),
         semantic_tuple(f":{entity_name}", ":codigo", encode_integer(code)),
@@ -113,7 +122,7 @@ def create_topic(name, code):
 def create_department(name, code):
     entity_name = to_title_case(name)
     tuples = [
-        semantic_tuple(f":{entity_name}", "rdf:type", ":owl:NamedIndividual"),
+        semantic_tuple(f":{entity_name}", "rdf:type", "owl:NamedIndividual"),
         semantic_tuple(f":{entity_name}", "rdf:type", ":Departamento"),
         semantic_tuple(f":{entity_name}", ":nombre", encode_string(name)),
         semantic_tuple(f":{entity_name}", ":codigo", encode_integer(code)),
@@ -122,11 +131,11 @@ def create_department(name, code):
 
 def create_named_individual(name):
     tuples = [
-        semantic_tuple(f":{name}", "rdf:type", ":owl:NamedIndividual"),
+        semantic_tuple(f":{name}", "rdf:type", "owl:NamedIndividual"),
     ]
     return name, tuples
 
-def create_boe_entry(title, code, date, department, topics, previous, posteriors, origen_legislativo):
+def create_boe_entry(title, code, date, department, topics, previous, posteriors, legislative_source):
     entity_name = code
     tuples = [
         semantic_tuple(f":{entity_name}", "rdf:type", "owl:NamedIndividual"),
@@ -141,15 +150,20 @@ def create_boe_entry(title, code, date, department, topics, previous, posteriors
         tuples.extend(department_tuples)
         tuples.append(semantic_tuple(f":{entity_name}", ":departamento", f":{department_entity_name}"))
     
-    # TODO: origen legislativo, debemos buscarlo en otra DB
-    #referencias a wikidata/DBpedia?
-    if origen_legislativo is None: pass 
-    elif origen_legislativo == "Estatal": 
-        tuples.append(semantic_tuple(f":{entity_name}", ":origenLegislativo", f"{encode_string('España')}"))
-    elif origen_legislativo == "Autonómico":
-        tuples.append(semantic_tuple(f":{entity_name}", ":origenLegislativo", f"{encode_string(department['texto'])}")) #Comunidad Autónoma
-    else: 
-        tuples.append(semantic_tuple(f":{entity_name}", ":origenLegislativo", f"{encode_string('Local')}"))
+    legislative_source_name, legislative_source_tuples = None, None
+    if legislative_source == "Estatal":
+        legislative_source_name, legislative_source_tuples = create_legislative_source("Estado", "España")
+    elif legislative_source == "Autonómico":
+        legislative_source_name, legislative_source_tuples = create_legislative_source("ComunidadAutónoma", department['texto'])
+    elif legislative_source == "Local":
+        locality_match = re.search(r", (?:de la|del?) ([^,(]*)(:? \([^)]*\))?,", title)
+        if locality_match is not None:
+            locality = locality_match.group(1)
+            legislative_source_name, legislative_source_tuples = create_legislative_source("Localidad", locality)
+    
+    if legislative_source_name is not None:
+        tuples.extend(legislative_source_tuples)
+        tuples.append(semantic_tuple(f":{entity_name}", ":origenLegislativo", f":{legislative_source_name}"))
     
     for topic in topics:
         topic_entity_name, topic_tuples = create_topic(topic["texto"], topic["codigo"])

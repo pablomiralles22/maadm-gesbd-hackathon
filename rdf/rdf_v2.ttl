@@ -30,10 +30,9 @@
 ###  http://www.semanticweb.org/hackathon/ontology/origenLegislativo
 :origenLegislativo rdf:type owl:ObjectProperty ;
                    rdfs:domain :EntradaBOE ;
-                   rdfs:range <http://es.dbpedia.org/resource/Comunidad_autónoma> ,
-                              <http://es.dbpedia.org/resource/Estado> ,
-                              <http://es.dbpedia.org/resource/Localidad> ,
-                              <http://es.dbpedia.org/resource/Provincia_(España)> .
+                   rdfs:range :ComunidadAutónoma ,
+                              :Estado ,
+                              :Localidad .
 
 
 ###  http://www.semanticweb.org/hackathon/ontology/rangoLegislativo
@@ -73,8 +72,8 @@
 
 ###  http://www.semanticweb.org/hackathon/ontology/fechaPublicacion
 :fechaPublicacion rdf:type owl:DatatypeProperty ;
-                   rdfs:domain :EntradaBOE ;
-                   rdfs:range xsd:dateTime .
+                  rdfs:domain :EntradaBOE ;
+                  rdfs:range xsd:dateTime .
 
 
 ###  http://www.semanticweb.org/hackathon/ontology/identificador
@@ -85,7 +84,9 @@
 
 ###  http://www.semanticweb.org/hackathon/ontology/nombre
 :nombre rdf:type owl:DatatypeProperty ;
-        rdfs:domain :Departamento ,
+        rdfs:domain :ComunidadAutónoma ,
+                    :Estado ,
+                    :Departamento ,
                     :Ley ,
                     :Materia ;
         rdfs:range xsd:string .
@@ -101,20 +102,16 @@
 #    Classes
 #################################################################
 
-###  http://es.dbpedia.org/resource/Comunidad_autónoma
-<http://es.dbpedia.org/resource/Comunidad_autónoma> rdf:type owl:Class .
+###  http://www.semanticweb.org/hackathon/ontology#ComunidadAutónoma
+:ComunidadAutónoma rdf:type owl:Class .
 
 
-###  http://es.dbpedia.org/resource/Estado
-<http://es.dbpedia.org/resource/Estado> rdf:type owl:Class .
+###  http://www.semanticweb.org/hackathon/ontology#Estado
+:Estado rdf:type owl:Class .
 
 
-###  http://es.dbpedia.org/resource/Localidad
-<http://es.dbpedia.org/resource/Localidad> rdf:type owl:Class .
-
-
-###  http://es.dbpedia.org/resource/Provincia_(España)
-<http://es.dbpedia.org/resource/Provincia_(España)> rdf:type owl:Class .
+###  http://www.semanticweb.org/hackathon/ontology#Localidad
+:Localidad rdf:type owl:Class .
 
 
 ###  http://www.semanticweb.org/hackathon/ontology/Departamento
@@ -150,14 +147,13 @@
 #################################################################
 
 ###  http://dbpedia.org/resource/España
-<http://dbpedia.org/resource/España> rdf:type owl:NamedIndividual ,
-                                              <http://es.dbpedia.org/resource/Estado> .
+<http://dbpedia.org/resource/España> rdf:type owl:NamedIndividual .
 
 
-###  http://www.semanticweb.org/hackathon/ontology#Organización_de_las_Comunidades_Autónomas
-:Organización_de_las_Comunidades_Autónomas rdf:type owl:NamedIndividual ;
-                                           :codigo 5281 ;
-                                           :nombre "Organización de las Comunidades Autónomas" .
+###  http://www.semanticweb.org/hackathon/ontology#España
+:España rdf:type owl:NamedIndividual ,
+                 :Estado ;
+        :nombre "España" .
 
 
 ###  http://www.semanticweb.org/hackathon/ontology/BOE-A-2022-22147
@@ -181,6 +177,12 @@
                                 :Departamento ;
                        :codigo 6110 ;
                        :nombre "Ministerio de Defensa" .
+
+
+###  http://www.semanticweb.org/hackathon/ontology/Organización_de_las_Comunidades_Autónomas
+:Organización_de_las_Comunidades_Autónomas rdf:type owl:NamedIndividual ;
+                                           :codigo 5281 ;
+                                           :nombre "Organización de las Comunidades Autónomas" .
 
 
 ###  http://www.semanticweb.org/hackathon/ontology/Resolución

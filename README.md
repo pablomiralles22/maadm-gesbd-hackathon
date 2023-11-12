@@ -16,7 +16,7 @@ python scripts/setup_dbs.py --env-file .env --graphdb-repo-init-file rdf/graphdb
 ## 3. Scrapear datos del BOE
 Lanzar el script de *scrapping*. Este admite tres parámetros: el directorio donde guardar los ficheros, y dos fechas que definen el rango de días en el que scrapear. Por ejemplo:
 ```
-python scripts/scrape.py --target-path downloads -s 2023-11-10 -e 2023-11-11
+python scripts/scrape.py --env-file .env --target-path downloads -s 2023-11-10 -e 2023-11-11
 ```
 Recomendamos no descargar muchos días, especialmente de cara a la carga en ElasticSearch que requiere de *embeddings* costosos de calcular.
 
@@ -27,19 +27,19 @@ Las fechas pueden estar o no presentes: Si se incluyen los parámetros `-s` y `-
 ### 4.1 Cargar datos en MongoDB
 Lanzar el script `load_mongodb`. Además de los parámetros mencionados, este script recibe `--path` indicando la ruta de los xml a insertar en MongoDB. 
 ```
-python scripts/load_mongodb.py --path downloads dates -s 2023-11-10 -e 2023-11-11
+python scripts/load_mongodb.py --env-file .env --path downloads dates -s 2023-11-10 -e 2023-11-11
 ```
 
 ### 4.2 Cargar datos en ElasticSearch
 Lanzar el script `load_elasticsearch`. Carga datos desde MongoDB a ElasticSearch. El script recibe también el parámetro `-c` o `--char-threshold`, donde se indica el tamaño mínimo del párrafo para ElasticSearch (`20` por defecto).
 ```
-python scripts/load_elasticsearch.py -c 20 dates -s 2023-11-10 -e 2023-11-11
+python scripts/load_elasticsearch.py --env-file .env -c 20 dates -s 2023-11-10 -e 2023-11-11
 ```
 
 ### 4.3 Cargar datos en GraphDB
 Lanzar el script `load_graphdb`. Carga datos desde MongoDB a GraphDB. Este script recibe los parámetros por defecto.
 ```
-python scripts/load_graphdb.py dates -s 2023-11-10 -e 2023-11-11
+python scripts/load_graphdb.py --env-file .env dates -s 2023-11-10 -e 2023-11-11
 ```
 
 ## 5. Jugar con los ejemplos de *queries*
