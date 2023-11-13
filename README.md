@@ -7,6 +7,11 @@ cp example.env .env
 docker-compose up
 ```
 
+Para ejecutar los scripts se deben instalar los paquetes en `conda-env.yml`. Se puede crear un entorno virtual con esos paquetes usando `conda`:
+```
+conda env create --file conda-env.yml
+```
+
 ## 2. Configurar las bases de datos
 Lanzar el script `setup_dbs`. Este requiere del archivo `.env` que se utilice, y de los archivos para inicializar el repositorio de GraphDB.
 ```
