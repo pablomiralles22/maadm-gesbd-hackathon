@@ -71,7 +71,8 @@ def load(document):
     
     load_text(doc_id, document["titulo"])
     if len(document["materias"]) > 0:
-        load_text(doc_id, "; ".join(document["materias"]))
+        topics = [topic["texto"] for topic in document["materias"]]
+        load_text(doc_id, "; ".join(topics))
 
 def main():
     query = {}
