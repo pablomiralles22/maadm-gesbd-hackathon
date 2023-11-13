@@ -97,7 +97,7 @@ def create_range(name, code):
     return entity_name, tuples
 
 def create_relationship_type(name, code, is_previous):
-    entity_name = to_camel_case(name)
+    entity_name = f"{code}{to_camel_case(name)}"
     tuples = [
         semantic_tuple(f":{entity_name}", "rdf:type", "owl:ObjectProperty"),
         semantic_tuple(f":{entity_name}", "rdfs:domain", ":EntradaBOE"),
