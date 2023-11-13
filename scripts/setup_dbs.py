@@ -32,7 +32,7 @@ db = client_mongo["boe_db"]
 collection = db["boe"]
 
 collection.create_index([("identificador", pymongo.DESCENDING)], name="id_index", unique=True)
-collection.create_index([("materias", pymongo.DESCENDING)], name="materias_index")
+collection.create_index([("materias.codigo", pymongo.DESCENDING)], name="materias_index")
 collection.create_index([("fecha_publicacion", pymongo.ASCENDING)], name="date_index")
 print('Done!')
 

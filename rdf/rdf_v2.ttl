@@ -54,7 +54,6 @@
 ###  http://www.semanticweb.org/hackathon/ontology/codigo
 :codigo rdf:type owl:DatatypeProperty ;
         rdfs:domain :Departamento ,
-                    :Ley ,
                     :Materia ,
                     :RangoLegislativo ,
                     :RelacionAnterior ,
@@ -87,7 +86,6 @@
         rdfs:domain :ComunidadAutónoma ,
                     :Estado ,
                     :Departamento ,
-                    :Ley ,
                     :Materia ;
         rdfs:range xsd:string .
 
@@ -120,10 +118,6 @@
 
 ###  http://www.semanticweb.org/hackathon/ontology/EntradaBOE
 :EntradaBOE rdf:type owl:Class .
-
-
-###  http://www.semanticweb.org/hackathon/ontology/Ley
-:Ley rdf:type owl:Class .
 
 
 ###  http://www.semanticweb.org/hackathon/ontology/Materia
