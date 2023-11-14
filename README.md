@@ -21,7 +21,7 @@ python scripts/setup_dbs.py --env-file .env --graphdb-repo-init-file rdf/graphdb
 ## 3. Scrapear datos del BOE
 Lanzar el script de *scrapping*. Este admite tres parámetros: el directorio donde guardar los ficheros, y dos fechas que definen el rango de días en el que scrapear. Por ejemplo:
 ```
-python scripts/scrape.py --env-file .env --target-path downloads -s 2023-11-10 -e 2023-11-11
+python scripts/scrape.py --target-path downloads -s 2023-11-10 -e 2023-11-11
 ```
 Recomendamos no descargar muchos días, especialmente de cara a la carga en ElasticSearch que requiere de *embeddings* costosos de calcular.
 
