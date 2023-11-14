@@ -191,3 +191,4 @@ pyrightconfig.json
 *.xml
 downloads
 notebooks/boe/*
+downloads_bu
